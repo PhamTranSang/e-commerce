@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: e-commerce
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Liquibase owns the schema; Hibernate only validates the mapping.
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # Expose only health; nothing that could leak configuration.
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      # Never render component details (JDBC URL, etc.) on the public endpoint.
+      show-details: never
+      show-components: never
+      group:
+        readiness:
+          # Readiness reflects the real database dependency.
+          include: readinessState,db

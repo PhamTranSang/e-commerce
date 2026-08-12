@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ecommerce-postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password!
+    ports:
+      - "5432:5432"
+    volumes:
+      # Docker-managed named volume: no host folder to create or gitignore.
+      # Reset with `docker compose ... down -v`.
+      - ecommerce-postgres:/var/lib/postgresql/data
+      # Auto-run schema bootstrap; executes ONLY on first init (empty volume).
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # Container is only "healthy" once PostgreSQL accepts connections.
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  ecommerce-postgres:
