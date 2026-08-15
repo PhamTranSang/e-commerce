@@ -10,6 +10,10 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
 
+logging:
+  pattern:
+    level: "%5p [%X{correlationId:-}]"
+
 management:
   endpoints:
     web:

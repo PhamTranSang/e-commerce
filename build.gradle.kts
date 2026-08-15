@@ -26,4 +26,12 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     runtimeOnly("org.postgresql:postgresql")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("com.tngtech.archunit:archunit-junit5:1.3.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

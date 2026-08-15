@@ -51,3 +51,4 @@ jobs:
             build/reports/
             build/test-results/
           if-no-files-found: ignore
+# claude --resume caed7384-5dee-4822-9ece-81557aa66f54
