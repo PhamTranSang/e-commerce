@@ -1,5 +1,6 @@
-package app.ecommerce.shared.web.tracing;
+package app.ecommerce.shared.impl.config;
 
+import app.ecommerce.shared.impl.filter.CorrelationIdFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

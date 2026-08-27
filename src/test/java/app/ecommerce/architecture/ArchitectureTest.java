@@ -17,10 +17,6 @@ import jakarta.persistence.Entity;
  * only {@code ..api..} is reachable across modules, {@code ..impl..} stays private.
  * These rules hard-fail on the first violation (no {@code FreezingArchRule}) because
  * the codebase starts clean and must stay at zero violations from day one.
- *
- * <p>The rules read thin today — no business module exists yet — but they are the
- * guardrail that trips the moment {@code catalog}/{@code identity} introduce
- * persistence types or cross-package coupling.
  */
 @AnalyzeClasses(
     packages = "app.ecommerce",
