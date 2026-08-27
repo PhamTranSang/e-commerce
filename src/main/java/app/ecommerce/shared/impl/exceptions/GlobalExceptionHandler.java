@@ -1,6 +1,7 @@
-package app.ecommerce.shared.api.exceptions;
+package app.ecommerce.shared.impl.exceptions;
 
 import app.ecommerce.shared.api.dto.response.ValidationError;
+import app.ecommerce.shared.api.exceptions.BusinessException;
 import app.ecommerce.shared.impl.filter.CorrelationIdFilter;
 import java.util.List;
 import java.util.stream.Stream;
