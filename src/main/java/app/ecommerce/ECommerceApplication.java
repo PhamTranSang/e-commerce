@@ -2,11 +2,15 @@ package app.ecommerce;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
 
 @SpringBootApplication
 public class ECommerceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ECommerceApplication.class, args);
+        final var application = new SpringApplication(ECommerceApplication.class);
+
+        application.setApplicationStartup(new BufferingApplicationStartup(2048));
+        application.run(args);
     }
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20260815.1230.add_catalog_pk" author="stran">
+        <addPrimaryKey tableName="t_category" columnNames="category_id" constraintName="pk_category" />
+        <addPrimaryKey tableName="t_product" columnNames="product_id" constraintName="pk_product" />
+        <addPrimaryKey tableName="t_sku" columnNames="sku_id" constraintName="pk_sku" />
+    </changeSet>
+
+    <changeSet id="20260815.1230.add_catalog_unique" author="stran">
+        <addUniqueConstraint tableName="t_sku" columnNames="sku_code" constraintName="uq_sku_code" />
+    </changeSet>
+
+    <changeSet id="20260815.1230.add_catalog_fk" author="stran">
+        <addForeignKeyConstraint
+            constraintName="fk_product_category"
+            baseTableName="t_product" baseColumnNames="category_id"
+            referencedTableName="t_category" referencedColumnNames="category_id"
+            onDelete="RESTRICT" onUpdate="RESTRICT" />
+        <addForeignKeyConstraint
+            constraintName="fk_sku_product"
+            baseTableName="t_sku" baseColumnNames="product_id"
+            referencedTableName="t_product" referencedColumnNames="product_id"
+            onDelete="RESTRICT" onUpdate="RESTRICT" />
+    </changeSet>
+
+    <changeSet id="20260815.1230.add_catalog_check_constraints" author="stran">
+        <sql>ALTER TABLE t_sku ADD CONSTRAINT ck_sku_weight_positive CHECK (weight_grams > 0)</sql>
+        <sql>ALTER TABLE t_sku ADD CONSTRAINT ck_sku_amount_non_negative CHECK (amount >= 0)</sql>
+        <sql>ALTER TABLE t_sku ADD CONSTRAINT ck_sku_currency_format CHECK (currency ~ '^[A-Z]{3}$')</sql>
+    </changeSet>
+</databaseChangeLog>

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+    <include file="./changes/20260815.1200.init_catalog_tables.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260815.1230.init_constraints_catalog.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260815.1250.add_catalog_index.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260817.1200.add_category_name_constraints.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

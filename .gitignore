@@ -41,3 +41,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# For AI
+.codex
+.claude

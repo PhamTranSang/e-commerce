@@ -11,6 +11,9 @@ spring:
     enabled: true
 
 logging:
+  level:
+    root: INFO
+    app.ecommerce: DEBUG
   pattern:
     level: "%5p [%X{correlationId:-}]"
 
@@ -19,7 +22,7 @@ management:
     web:
       exposure:
         # Expose only health; nothing that could leak configuration.
-        include: health
+        include: health,startup
   endpoint:
     health:
       probes:
