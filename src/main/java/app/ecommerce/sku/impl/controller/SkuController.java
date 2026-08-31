@@ -1,10 +1,10 @@
-package app.ecommerce.catalog.impl.controller;
+package app.ecommerce.sku.impl.controller;
 
-import app.ecommerce.catalog.api.dto.request.CreateCategoryRequest;
-import app.ecommerce.catalog.api.dto.request.RenameCategoryRequest;
-import app.ecommerce.catalog.api.dto.response.CategoryResponse;
 import app.ecommerce.shared.api.dto.response.PageResponse;
-import app.ecommerce.catalog.api.service.CategoryService;
+import app.ecommerce.sku.api.dto.request.CreateSkuRequest;
+import app.ecommerce.sku.api.dto.request.UpdateSkuRequest;
+import app.ecommerce.sku.api.dto.response.SkuResponse;
+import app.ecommerce.sku.api.service.SkuService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,31 +23,33 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/api/skus")
 @RequiredArgsConstructor
-public class CatalogController {
+public class SkuController {
 
-    private final CategoryService service;
+    private final SkuService service;
 
     @PostMapping
-    public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CreateCategoryRequest request) {
-        final var response = service.createCategory(request);
+    public ResponseEntity<SkuResponse> createSku(
+            @Valid @RequestBody final CreateSkuRequest request) {
+        final var response = service.createSku(request);
         final var location = ServletUriComponentsBuilder
             .fromCurrentRequest()
-            .path("/{categoryId}")
-            .buildAndExpand(response.categoryId())
+            .path("/{skuId}")
+            .buildAndExpand(response.skuId())
             .toUri();
         return ResponseEntity.created(location).body(response);
     }
 
-    @GetMapping("/{categoryId}")
-    public ResponseEntity<CategoryResponse> getCategory(@PathVariable final UUID categoryId) {
-        final var response = service.getCategory(categoryId);
+    @GetMapping("/{skuId}")
+    public ResponseEntity<SkuResponse> getSku(@PathVariable final UUID skuId) {
+        final var response = service.getSku(skuId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<CategoryResponse>> getCategories(
+    public ResponseEntity<PageResponse<SkuResponse>> getSkus(
+        @RequestParam final UUID productId,
         @RequestParam(defaultValue = "1")
         @Min(value = 1, message = "Page must be greater than or equal to 1")
         final int page,
@@ -56,24 +58,22 @@ public class CatalogController {
         @Max(value = 100, message = "Size must not exceed 100")
         final int size
     ) {
-        final var response = service.getCategories(page, size);
+        final var response = service.getSkus(productId, page, size);
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{categoryId}")
-    public ResponseEntity<CategoryResponse> renameCategory(
-        @PathVariable final UUID categoryId,
-        @Valid @RequestBody final RenameCategoryRequest request
+    @PatchMapping("/{skuId}")
+    public ResponseEntity<SkuResponse> updateSku(
+        @PathVariable final UUID skuId,
+        @Valid @RequestBody final UpdateSkuRequest request
     ) {
-        final var response = service.renameCategory(categoryId, request);
+        final var response = service.updateSku(skuId, request);
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{categoryId}")
-    public ResponseEntity<Void> deactivateCategory(
-        @PathVariable final UUID categoryId
-    ) {
-        service.deactivateCategory(categoryId);
+    @DeleteMapping("/{skuId}")
+    public ResponseEntity<Void> deactivateSku(@PathVariable final UUID skuId) {
+        service.deactivateSku(skuId);
         return ResponseEntity.noContent().build();
     }
 }

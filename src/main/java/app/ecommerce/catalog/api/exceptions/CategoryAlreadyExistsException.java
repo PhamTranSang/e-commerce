@@ -1,9 +1,8 @@
 package app.ecommerce.catalog.api.exceptions;
 
-import app.ecommerce.shared.api.exceptions.BusinessException;
-import org.springframework.http.HttpStatus;
+import app.ecommerce.shared.api.exceptions.ResourceConflictException;
 
-public final class CategoryAlreadyExistsException extends BusinessException {
+public final class CategoryAlreadyExistsException extends ResourceConflictException {
 
     public static final String CODE = "CATEGORY_ALREADY_EXISTS";
 
@@ -12,11 +11,6 @@ public final class CategoryAlreadyExistsException extends BusinessException {
     }
 
     public CategoryAlreadyExistsException(final String categoryName, final Throwable cause) {
-        super(
-            HttpStatus.CONFLICT,
-            CODE,
-            "Category '%s' already exists".formatted(categoryName),
-            cause
-        );
+        super(CODE, "Category '%s' already exists".formatted(categoryName), cause);
     }
 }

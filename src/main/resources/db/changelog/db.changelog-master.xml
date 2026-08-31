@@ -9,4 +9,6 @@
     <include file="./changes/20260815.1230.init_constraints_catalog.xml" relativeToChangelogFile="true" />
     <include file="./changes/20260815.1250.add_catalog_index.xml" relativeToChangelogFile="true" />
     <include file="./changes/20260817.1200.add_category_name_constraints.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260830.1200.add_product_name_constraints.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260831.1200.add_sku_code_constraints.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

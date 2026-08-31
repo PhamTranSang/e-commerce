@@ -10,14 +10,6 @@ import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition;
 import jakarta.persistence.Entity;
 
-/**
- * Enforces the modular-monolith boundaries for the api-foundation milestone.
- *
- * <p>Business modules follow an {@code api}/{@code impl} package convention:
- * only {@code ..api..} is reachable across modules, {@code ..impl..} stays private.
- * These rules hard-fail on the first violation (no {@code FreezingArchRule}) because
- * the codebase starts clean and must stay at zero violations from day one.
- */
 @AnalyzeClasses(
     packages = "app.ecommerce",
     importOptions = ImportOption.DoNotIncludeTests.class)
@@ -29,15 +21,25 @@ class ArchitectureTest {
         noClasses().that().resideInAPackage("..api..")
             .should().dependOnClassesThat().resideInAPackage("..impl..");
 
+    /** Shared contracts must not acquire dependencies on an individual business feature. */
+    @ArchTest
+    static final ArchRule shared_api_must_not_depend_on_business_features =
+        noClasses().that().resideInAPackage("..shared.api..")
+            .should().dependOnClassesThat().resideInAnyPackage(
+                "..catalog..",
+                "..product..",
+                "..sku.."
+            );
+
     /** Persistence entities are an implementation detail and must live inside {@code impl}. */
     @ArchTest
     static final ArchRule entities_live_only_in_impl =
         classes().that().areAnnotatedWith(Entity.class)
             .should().resideInAPackage("..impl..");
 
-    /** Nothing outside {@code impl} may reference a persistence entity. */
+    /** Entities may cross feature boundaries, but only implementation code may reference them. */
     @ArchTest
-    static final ArchRule entities_never_referenced_outside_impl =
+    static final ArchRule entities_may_only_be_referenced_from_impl =
         noClasses().that().resideOutsideOfPackages("..impl..")
             .should().dependOnClassesThat().areAnnotatedWith(Entity.class);
 

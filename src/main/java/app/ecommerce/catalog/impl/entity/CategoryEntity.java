@@ -1,5 +1,6 @@
 package app.ecommerce.catalog.impl.entity;
 
+import app.ecommerce.shared.impl.entity.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

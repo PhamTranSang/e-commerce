@@ -3,9 +3,10 @@ package app.ecommerce.catalog.impl.service;
 import app.ecommerce.catalog.api.dto.request.CreateCategoryRequest;
 import app.ecommerce.catalog.api.dto.request.RenameCategoryRequest;
 import app.ecommerce.catalog.api.dto.response.CategoryResponse;
-import app.ecommerce.catalog.api.dto.response.PageResponse;
+import app.ecommerce.shared.api.dto.response.PageResponse;
 import app.ecommerce.catalog.api.exceptions.CategoryAlreadyExistsException;
 import app.ecommerce.catalog.api.exceptions.CategoryNotFoundException;
+import app.ecommerce.catalog.api.event.CategoryDeactivatedEvent;
 import app.ecommerce.catalog.api.service.CategoryService;
 import app.ecommerce.catalog.impl.mapper.CategoryMapper;
 import app.ecommerce.catalog.impl.repository.CategoryRepository;
@@ -14,6 +15,7 @@ import java.time.Clock;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -31,6 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper mapper;
     private final Clock clock;
     private final DatabaseConstraintInspector constraintInspector;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -150,8 +153,11 @@ public class CategoryServiceImpl implements CategoryService {
             return;
         }
 
-        mapper.deactivate(entity, clock.instant());
+        final var now = clock.instant();
+        mapper.deactivate(entity, now);
         repository.saveAndFlush(entity);
+
+        eventPublisher.publishEvent(new CategoryDeactivatedEvent(categoryId, now));
 
         log.info("Category deactivated: categoryId={}", categoryId);
     }
