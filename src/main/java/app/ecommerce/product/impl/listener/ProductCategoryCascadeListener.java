@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 /**
  * Cascades a category soft-delete down to its products.
  *
- * <p>Runs synchronously inside the category deactivation transaction, so the
- * product updates commit or roll back together with the category.
+ * <p>Runs synchronously inside the category deactivation transaction, so the product updates
+ * commit or roll back together with the category.
  */
 @Slf4j
 @Component
@@ -23,13 +23,9 @@ public class ProductCategoryCascadeListener {
     @EventListener
     public void onCategoryDeactivated(final CategoryDeactivatedEvent event) {
         final var deactivatedProducts = productRepository.deactivateAllByCategoryId(
-            event.categoryId(),
-            event.occurredAt()
-        );
+            event.categoryId(), event.occurredAt());
         log.info(
             "Products deactivated by category cascade: categoryId={}, cascadedProducts={}",
-            event.categoryId(),
-            deactivatedProducts
-        );
+            event.categoryId(), deactivatedProducts);
     }
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20260901.1606.init_social_identity_table" author="stran">
+        <createTable tableName="t_social_identity">
+            <column name="social_identity_id" type="UUID">
+                <constraints nullable="false" />
+            </column>
+            <column name="account_id" type="UUID">
+                <constraints nullable="false" />
+            </column>
+            <column name="provider" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="provider_user_id" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20260901.1606.add_pk" author="stran">
+        <addPrimaryKey tableName="t_social_identity" columnNames="social_identity_id"
+                       constraintName="pk_social_identity" />
+    </changeSet>
+
+    <changeSet id="20260901.1606.add_fk" author="stran">
+        <addForeignKeyConstraint baseTableName="t_social_identity" baseColumnNames="account_id"
+                                 constraintName="fk_social_identity_account"
+                                 referencedTableName="t_account"
+                                 referencedColumnNames="account_id" onDelete="RESTRICT" />
+    </changeSet>
+
+    <changeSet id="20260901.1606.add_uq_index" author="stran">
+        <!-- một tài khoản bên provider (vd 1 Google account) chỉ map tới 1 account trong hệ -->
+        <addUniqueConstraint tableName="t_social_identity" columnNames="provider, provider_user_id"
+                             constraintName="uq_social_identity_provider_user" />
+        <!-- một account chỉ liên kết 1 lần cho mỗi provider -->
+        <addUniqueConstraint tableName="t_social_identity" columnNames="account_id, provider"
+                             constraintName="uq_social_identity_account_provider" />
+    </changeSet>
+</databaseChangeLog>

@@ -3,11 +3,13 @@ package app.ecommerce.catalog.impl.entity;
 import app.ecommerce.shared.impl.entity.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
@@ -27,12 +29,16 @@ public class CategoryEntity extends AuditableEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID categoryId;
 
-    @NotBlank
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private CategoryEntity parent;
+
+    @NotNull
     @Size(max = 255)
     @Column(name = "category_name", nullable = false)
     private String categoryName;
 
     @NotNull
-    @Column(name = "category_is_active", nullable = false)
-    private Boolean isActive;
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
 }

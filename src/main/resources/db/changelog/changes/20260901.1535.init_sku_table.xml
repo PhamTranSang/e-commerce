@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20260901.1535.init_sku_table" author="stran">
+        <createTable tableName="t_sku">
+            <column name="sku_id" type="UUID">
+                <constraints nullable="false" />
+            </column>
+            <column name="product_id" type="UUID">
+                <constraints nullable="false" />
+            </column>
+            <column name="sku_code" type="VARCHAR(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="amount" type="NUMERIC(12, 2)">
+                <constraints nullable="false" />
+            </column>
+            <column name="currency" type="VARCHAR(3)">
+                <constraints nullable="false" />
+            </column>
+            <column name="weight_grams" type="INTEGER">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20260901.1535.add_pk" author="stran">
+        <addPrimaryKey tableName="t_sku" columnNames="sku_id" constraintName="pk_sku" />
+    </changeSet>
+
+    <changeSet id="20260901.1535.add_fk" author="stran">
+        <addForeignKeyConstraint baseTableName="t_sku" baseColumnNames="product_id"
+                                 constraintName="fk_sku_product"
+                                 referencedTableName="t_product"
+                                 referencedColumnNames="product_id" onDelete="RESTRICT" />
+    </changeSet>
+
+    <changeSet id="20260901.1535.add_uq_index" author="stran">
+        <addUniqueConstraint tableName="t_sku" columnNames="sku_code" constraintName="uq_sku_code" />
+    </changeSet>
+
+    <changeSet id="20260901.1535.add_constraint" author="stran">
+        <sql>
+            ALTER TABLE t_sku
+            ADD CONSTRAINT ck_sku_code_normalized
+            CHECK (sku_code = BTRIM(sku_code) AND sku_code &lt;&gt; '')
+        </sql>
+        <sql>ALTER TABLE t_sku ADD CONSTRAINT ck_sku_weight_positive CHECK (weight_grams &gt; 0)</sql>
+        <sql>ALTER TABLE t_sku ADD CONSTRAINT ck_sku_amount_non_negative CHECK (amount &gt;= 0)</sql>
+        <sql>ALTER TABLE t_sku ADD CONSTRAINT ck_sku_currency_format CHECK (currency ~ '^[A-Z]{3}$')</sql>
+    </changeSet>
+</databaseChangeLog>

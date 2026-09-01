@@ -1,9 +1,10 @@
 package app.ecommerce.product.impl.mapper;
 
+import app.ecommerce.brand.impl.entity.BrandEntity;
+import app.ecommerce.catalog.impl.entity.CategoryEntity;
 import app.ecommerce.product.api.dto.request.CreateProductRequest;
 import app.ecommerce.product.api.dto.request.UpdateProductRequest;
 import app.ecommerce.product.api.dto.response.ProductResponse;
-import app.ecommerce.catalog.impl.entity.CategoryEntity;
 import app.ecommerce.product.impl.entity.ProductEntity;
 import java.time.Instant;
 import org.springframework.stereotype.Component;
@@ -14,10 +15,12 @@ public class ProductMapper {
     public ProductEntity toNewEntity(
         final CreateProductRequest request,
         final CategoryEntity category,
+        final BrandEntity brand,
         final Instant now
     ) {
         final var entity = new ProductEntity();
         entity.setCategory(category);
+        entity.setBrand(brand);
         entity.setProductName(request.productName());
         entity.setProductDescription(request.productDescription());
         entity.setIsActive(true);
@@ -45,6 +48,7 @@ public class ProductMapper {
         return new ProductResponse(
             entity.getProductId(),
             entity.getCategory().getCategoryId(),
+            entity.getBrand().getBrandId(),
             entity.getProductName(),
             entity.getProductDescription(),
             entity.getIsActive(),

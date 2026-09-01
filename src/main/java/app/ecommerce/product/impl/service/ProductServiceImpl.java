@@ -1,17 +1,21 @@
 package app.ecommerce.product.impl.service;
 
+import app.ecommerce.brand.api.exceptions.BrandNotFoundException;
+import app.ecommerce.brand.impl.repository.BrandRepository;
+import app.ecommerce.catalog.api.exceptions.CategoryNotFoundException;
+import app.ecommerce.catalog.impl.repository.CategoryRepository;
 import app.ecommerce.product.api.dto.request.CreateProductRequest;
 import app.ecommerce.product.api.dto.request.UpdateProductRequest;
-import app.ecommerce.shared.api.dto.response.PageResponse;
 import app.ecommerce.product.api.dto.response.ProductResponse;
-import app.ecommerce.catalog.api.exceptions.CategoryNotFoundException;
 import app.ecommerce.product.api.event.ProductDeactivatedEvent;
+import app.ecommerce.product.api.exceptions.LeafCategoryRequiredException;
 import app.ecommerce.product.api.exceptions.ProductAlreadyExistsException;
 import app.ecommerce.product.api.exceptions.ProductNotFoundException;
 import app.ecommerce.product.api.service.ProductService;
 import app.ecommerce.product.impl.mapper.ProductMapper;
-import app.ecommerce.catalog.impl.repository.CategoryRepository;
 import app.ecommerce.product.impl.repository.ProductRepository;
+import app.ecommerce.product.impl.repository.ProductSpecifications;
+import app.ecommerce.shared.api.dto.response.PageResponse;
 import app.ecommerce.shared.impl.persistence.DatabaseConstraintInspector;
 import java.time.Clock;
 import java.util.UUID;
@@ -29,10 +33,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    private static final String PRODUCT_NAME_UNIQUE_CONSTRAINT = "uq_product_name_normalized";
+    private static final String PRODUCT_NAME_CONSTRAINT = "uq_product_name";
 
     private final ProductRepository repository;
     private final CategoryRepository categoryRepository;
+    private final BrandRepository brandRepository;
     private final ProductMapper mapper;
     private final Clock clock;
     private final DatabaseConstraintInspector constraintInspector;
@@ -41,36 +46,35 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductResponse createProduct(final CreateProductRequest request) {
-        log.debug("Creating product: categoryId={}", request.categoryId());
-
         final var productName = request.productName().strip();
-        final var category = categoryRepository
-            .findByCategoryIdAndIsActiveTrue(request.categoryId())
-            .orElseThrow(() -> new CategoryNotFoundException(request.categoryId()));
+        final var categoryId = request.categoryId();
+        final var brandId = request.brandId();
+        log.debug("Creating product: categoryId={}, brandId={}", categoryId, brandId);
 
-        if (repository.existsByCategory_CategoryIdAndProductNameIgnoreCase(
-                request.categoryId(), productName)) {
+        final var category = categoryRepository.findByCategoryIdAndIsActiveTrue(categoryId)
+            .orElseThrow(() -> new CategoryNotFoundException(categoryId));
+        if (categoryRepository.hasChildren(categoryId)) {
+            throw new LeafCategoryRequiredException(categoryId);
+        }
+        final var brand = brandRepository.findByBrandIdAndIsActiveTrue(brandId)
+            .orElseThrow(() -> new BrandNotFoundException(brandId));
+
+        if (repository.existsByNameInCategory(categoryId, productName, null)) {
             throw new ProductAlreadyExistsException(productName);
         }
 
         final var normalizedRequest = new CreateProductRequest(
-            request.categoryId(),
-            productName,
-            request.productDescription()
-        );
+            categoryId, brandId, productName, request.productDescription());
 
         try {
             final var now = clock.instant();
             final var entity = repository.saveAndFlush(
-                mapper.toNewEntity(normalizedRequest, category, now));
+                mapper.toNewEntity(normalizedRequest, category, brand, now));
             log.info("Product created: productId={}", entity.getProductId());
             return mapper.toResponse(entity);
         } catch (final DataIntegrityViolationException e) {
-            if (constraintInspector.isViolationOf(e, PRODUCT_NAME_UNIQUE_CONSTRAINT)) {
-                log.warn(
-                    "Concurrent product creation conflict: constraint={}",
-                    PRODUCT_NAME_UNIQUE_CONSTRAINT
-                );
+            if (constraintInspector.isViolationOf(e, PRODUCT_NAME_CONSTRAINT)) {
+                log.warn("Concurrent product creation conflict: categoryId={}", categoryId);
                 throw new ProductAlreadyExistsException(productName, e);
             }
             throw e;
@@ -85,7 +89,6 @@ public class ProductServiceImpl implements ProductService {
         final var entity = repository.findByProductIdAndIsActiveTrue(productId)
             .orElseThrow(() -> new ProductNotFoundException(productId));
 
-        log.debug("Product retrieved: productId={}", entity.getProductId());
         return mapper.toResponse(entity);
     }
 
@@ -94,7 +97,6 @@ public class ProductServiceImpl implements ProductService {
     public PageResponse<ProductResponse> getProducts(
             final UUID categoryId, final int page, final int size) {
         final var pageIndex = page - 1;
-
         final var sort = Sort
             .by(Sort.Direction.DESC, "createdAt")
             .and(Sort.by(Sort.Direction.DESC, "productId"));
@@ -102,19 +104,8 @@ public class ProductServiceImpl implements ProductService {
         log.debug("Getting active products: categoryId={}, page={}, size={}", categoryId, page, size);
 
         final var entityPage = repository
-            .findAllByCategory_CategoryIdAndIsActiveTrue(categoryId, pageable)
+            .findAll(ProductSpecifications.activeInCategory(categoryId), pageable)
             .map(mapper::toResponse);
-
-        log.debug(
-            "Active products retrieved: categoryId={}, page={}, size={}, numberOfElements={}, "
-                + "totalElements={}, totalPages={}",
-            categoryId,
-            page,
-            size,
-            entityPage.getNumberOfElements(),
-            entityPage.getTotalElements(),
-            entityPage.getTotalPages()
-        );
         return PageResponse.from(entityPage);
     }
 
@@ -129,8 +120,7 @@ public class ProductServiceImpl implements ProductService {
         final var productName = request.productName().strip();
         final var categoryId = entity.getCategory().getCategoryId();
 
-        if (repository.existsByCategory_CategoryIdAndProductNameIgnoreCaseAndProductIdNot(
-                categoryId, productName, productId)) {
+        if (repository.existsByNameInCategory(categoryId, productName, productId)) {
             throw new ProductAlreadyExistsException(productName);
         }
 
@@ -141,16 +131,12 @@ public class ProductServiceImpl implements ProductService {
         );
 
         try {
-            final var updatedEntity = repository.saveAndFlush(entity);
-            log.info("Product updated: productId={}", updatedEntity.getProductId());
-            return mapper.toResponse(updatedEntity);
+            final var updated = repository.saveAndFlush(entity);
+            log.info("Product updated: productId={}", updated.getProductId());
+            return mapper.toResponse(updated);
         } catch (final DataIntegrityViolationException e) {
-            if (constraintInspector.isViolationOf(e, PRODUCT_NAME_UNIQUE_CONSTRAINT)) {
-                log.warn(
-                    "Concurrent product update conflict: productId={}, constraint={}",
-                    productId,
-                    PRODUCT_NAME_UNIQUE_CONSTRAINT
-                );
+            if (constraintInspector.isViolationOf(e, PRODUCT_NAME_CONSTRAINT)) {
+                log.warn("Concurrent product update conflict: productId={}", productId);
                 throw new ProductAlreadyExistsException(productName, e);
             }
             throw e;
