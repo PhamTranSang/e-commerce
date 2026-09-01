@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public record CategoryResponse(
     UUID categoryId,
+    UUID parentId,
     String categoryName,
     Boolean isActive,
     Instant createdAt,

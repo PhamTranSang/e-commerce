@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20260901.1600.init_role_table" author="stran">
+        <createTable tableName="t_role">
+            <column name="role_id" type="UUID">
+                <constraints nullable="false" />
+            </column>
+            <column name="role_code" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20260901.1600.add_pk" author="stran">
+        <addPrimaryKey tableName="t_role" columnNames="role_id" constraintName="pk_role" />
+    </changeSet>
+
+    <changeSet id="20260901.1600.add_uq_index" author="stran">
+        <addUniqueConstraint tableName="t_role" columnNames="role_code" constraintName="uq_role_code" />
+    </changeSet>
+</databaseChangeLog>

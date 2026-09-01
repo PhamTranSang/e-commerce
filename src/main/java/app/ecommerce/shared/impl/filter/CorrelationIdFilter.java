@@ -18,7 +18,11 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
     private static final int MAX_LEN = 64;
 
     @Override
-    protected void doFilterInternal(final HttpServletRequest request, @NonNull final HttpServletResponse response, @NonNull final FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+        final HttpServletRequest request,
+        @NonNull final HttpServletResponse response,
+        @NonNull final FilterChain filterChain)
+    throws ServletException, IOException {
         var id = sanitize(request.getHeader(HEADER));
 
         if (Objects.isNull(id)) {

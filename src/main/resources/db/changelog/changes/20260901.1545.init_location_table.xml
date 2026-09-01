@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20260901.1545.init_location_table" author="stran">
+        <createTable tableName="t_location">
+            <column name="location_id" type="UUID">
+                <constraints nullable="false" />
+            </column>
+            <column name="location_code" type="VARCHAR(32)">
+                <constraints nullable="false" />
+            </column>
+            <column name="location_name" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="province" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="district" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ward" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="address_line" type="VARCHAR(255)" />
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueDate="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20260901.1545.add_pk" author="stran">
+        <addPrimaryKey tableName="t_location" columnNames="location_id" constraintName="pk_location" />
+    </changeSet>
+
+    <changeSet id="20260901.1545.add_uq_index" author="stran">
+        <addUniqueConstraint tableName="t_location" columnNames="location_code"
+                             constraintName="uq_location_code" />
+    </changeSet>
+</databaseChangeLog>

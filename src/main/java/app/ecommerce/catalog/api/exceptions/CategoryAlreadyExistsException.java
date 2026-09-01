@@ -11,6 +11,6 @@ public final class CategoryAlreadyExistsException extends ResourceConflictExcept
     }
 
     public CategoryAlreadyExistsException(final String categoryName, final Throwable cause) {
-        super(CODE, "Category '%s' already exists".formatted(categoryName), cause);
+        super(CODE, "Category '%s' already exists under the same parent".formatted(categoryName), cause);
     }
 }

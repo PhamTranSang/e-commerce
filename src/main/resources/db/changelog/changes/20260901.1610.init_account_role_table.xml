@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20260901.1610.init_account_role_table" author="stran">
+        <createTable tableName="t_account_role">
+            <column name="account_id" type="UUID">
+                <constraints nullable="false" />
+            </column>
+            <column name="role_id" type="UUID">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20260901.1610.add_pk" author="stran">
+        <addPrimaryKey tableName="t_account_role" columnNames="account_id, role_id"
+                       constraintName="pk_account_role" />
+    </changeSet>
+
+    <changeSet id="20260901.1610.add_fk" author="stran">
+        <addForeignKeyConstraint baseTableName="t_account_role" baseColumnNames="account_id"
+                                 constraintName="fk_account_role_account"
+                                 referencedTableName="t_account"
+                                 referencedColumnNames="account_id" onDelete="RESTRICT" />
+        <addForeignKeyConstraint baseTableName="t_account_role" baseColumnNames="role_id"
+                                 constraintName="fk_account_role_role"
+                                 referencedTableName="t_role"
+                                 referencedColumnNames="role_id" onDelete="RESTRICT" />
+    </changeSet>
+</databaseChangeLog>

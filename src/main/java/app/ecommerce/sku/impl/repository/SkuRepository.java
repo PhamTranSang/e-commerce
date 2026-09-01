@@ -4,28 +4,22 @@ import app.ecommerce.sku.impl.entity.SkuEntity;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface SkuRepository extends JpaRepository<SkuEntity, UUID> {
-
-    boolean existsBySkuCode(final String skuCode);
+public interface SkuRepository
+        extends JpaRepository<SkuEntity, UUID>, JpaSpecificationExecutor<SkuEntity> {
 
     Optional<SkuEntity> findBySkuIdAndIsActiveTrue(final UUID skuId);
 
-    Page<SkuEntity> findAllByProduct_ProductIdAndIsActiveTrue(
-        final UUID productId,
-        final Pageable pageable
-    );
+    boolean existsBySkuCode(final String skuCode);
 
     @Modifying
     @Query("""
-        UPDATE SkuEntity s
-        SET s.isActive = false, s.updatedAt = :now
+        UPDATE SkuEntity s SET s.isActive = false, s.updatedAt = :now
         WHERE s.product.productId = :productId AND s.isActive = true
         """)
     int deactivateAllByProductId(
@@ -35,8 +29,7 @@ public interface SkuRepository extends JpaRepository<SkuEntity, UUID> {
 
     @Modifying
     @Query("""
-        UPDATE SkuEntity s
-        SET s.isActive = false, s.updatedAt = :now
+        UPDATE SkuEntity s SET s.isActive = false, s.updatedAt = :now
         WHERE s.product.category.categoryId = :categoryId AND s.isActive = true
         """)
     int deactivateAllByCategoryId(

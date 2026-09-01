@@ -10,8 +10,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class CategoryMapper {
 
-    public CategoryEntity toNewEntity(final CreateCategoryRequest request, final Instant now) {
+    public CategoryEntity toNewEntity(
+        final CreateCategoryRequest request,
+        final CategoryEntity parent,
+        final Instant now
+    ) {
         final var entity = new CategoryEntity();
+        entity.setParent(parent);
         entity.setCategoryName(request.categoryName());
         entity.setIsActive(true);
         entity.setCreatedAt(now);
@@ -36,6 +41,7 @@ public class CategoryMapper {
     public CategoryResponse toResponse(final CategoryEntity entity) {
         return new CategoryResponse(
             entity.getCategoryId(),
+            entity.getParent() == null ? null : entity.getParent().getCategoryId(),
             entity.getCategoryName(),
             entity.getIsActive(),
             entity.getCreatedAt(),

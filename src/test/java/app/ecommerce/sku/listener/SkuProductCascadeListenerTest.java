@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 class SkuProductCascadeListenerTest {
 
-    private static final Instant NOW = Instant.parse("2026-08-31T10:00:00Z");
+    private static final Instant NOW = Instant.parse("2026-09-01T10:00:00Z");
 
     private final SkuRepository skuRepository = mock(SkuRepository.class);
     private final SkuProductCascadeListener listener =

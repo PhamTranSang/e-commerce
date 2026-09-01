@@ -1,6 +1,7 @@
 package app.ecommerce.sku.impl.mapper;
 
 import app.ecommerce.product.impl.entity.ProductEntity;
+import app.ecommerce.product.impl.entity.ProductOptionValueEntity;
 import app.ecommerce.sku.api.dto.request.CreateSkuRequest;
 import app.ecommerce.sku.api.dto.request.UpdateSkuRequest;
 import app.ecommerce.sku.api.dto.response.SkuResponse;
@@ -12,16 +13,17 @@ import org.springframework.stereotype.Component;
 public class SkuMapper {
 
     public SkuEntity toNewEntity(
-        final CreateSkuRequest request,
         final ProductEntity product,
+        final CreateSkuRequest request,
+        final String skuCode,
         final Instant now
     ) {
         final var entity = new SkuEntity();
         entity.setProduct(product);
-        entity.setSkuCode(request.skuCode());
-        entity.setWeightGrams(request.weightGrams());
+        entity.setSkuCode(skuCode);
         entity.setAmount(request.amount());
         entity.setCurrency(request.currency());
+        entity.setWeightGrams(request.weightGrams());
         entity.setIsActive(true);
         entity.setCreatedAt(now);
         entity.setUpdatedAt(now);
@@ -33,9 +35,9 @@ public class SkuMapper {
         final UpdateSkuRequest request,
         final Instant updatedAt
     ) {
-        entity.setWeightGrams(request.weightGrams());
         entity.setAmount(request.amount());
         entity.setCurrency(request.currency());
+        entity.setWeightGrams(request.weightGrams());
         entity.setUpdatedAt(updatedAt);
     }
 
@@ -45,13 +47,17 @@ public class SkuMapper {
     }
 
     public SkuResponse toResponse(final SkuEntity entity) {
+        final var optionValueIds = entity.getOptionValues().stream()
+            .map(ProductOptionValueEntity::getOptionValueId)
+            .toList();
         return new SkuResponse(
             entity.getSkuId(),
             entity.getProduct().getProductId(),
             entity.getSkuCode(),
-            entity.getWeightGrams(),
             entity.getAmount(),
             entity.getCurrency(),
+            entity.getWeightGrams(),
+            optionValueIds,
             entity.getIsActive(),
             entity.getCreatedAt(),
             entity.getUpdatedAt()

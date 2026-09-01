@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20260901.1540.init_sku_option_value_table" author="stran">
+        <createTable tableName="t_sku_option_value">
+            <column name="sku_id" type="UUID">
+                <constraints nullable="false" />
+            </column>
+            <column name="option_value_id" type="UUID">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20260901.1540.add_pk" author="stran">
+        <addPrimaryKey tableName="t_sku_option_value" columnNames="sku_id, option_value_id"
+                       constraintName="pk_sku_option_value" />
+    </changeSet>
+
+    <changeSet id="20260901.1540.add_fk" author="stran">
+        <addForeignKeyConstraint baseTableName="t_sku_option_value" baseColumnNames="sku_id"
+                                 constraintName="fk_sov_sku"
+                                 referencedTableName="t_sku"
+                                 referencedColumnNames="sku_id" onDelete="RESTRICT" />
+        <addForeignKeyConstraint baseTableName="t_sku_option_value" baseColumnNames="option_value_id"
+                                 constraintName="fk_sov_option_value"
+                                 referencedTableName="t_product_option_value"
+                                 referencedColumnNames="option_value_id" onDelete="RESTRICT" />
+    </changeSet>
+</databaseChangeLog>

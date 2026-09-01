@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 /**
  * Cascades a product soft-delete down to its SKUs.
  *
- * <p>Runs synchronously inside the product deactivation transaction, so the
- * SKU updates commit or roll back together with the product.
+ * <p>Runs synchronously inside the product deactivation transaction, so the SKU updates
+ * commit or roll back together with the product.
  */
 @Slf4j
 @Component
@@ -23,13 +23,9 @@ public class SkuProductCascadeListener {
     @EventListener
     public void onProductDeactivated(final ProductDeactivatedEvent event) {
         final var deactivatedSkus = skuRepository.deactivateAllByProductId(
-            event.productId(),
-            event.occurredAt()
-        );
+            event.productId(), event.occurredAt());
         log.info(
             "SKUs deactivated by product cascade: productId={}, cascadedSkus={}",
-            event.productId(),
-            deactivatedSkus
-        );
+            event.productId(), deactivatedSkus);
     }
 }

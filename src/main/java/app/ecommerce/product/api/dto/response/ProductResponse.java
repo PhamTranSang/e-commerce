@@ -6,6 +6,7 @@ import java.util.UUID;
 public record ProductResponse(
     UUID productId,
     UUID categoryId,
+    UUID brandId,
     String productName,
     String productDescription,
     Boolean isActive,

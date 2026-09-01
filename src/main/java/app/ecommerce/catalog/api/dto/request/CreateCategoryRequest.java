@@ -2,9 +2,13 @@ package app.ecommerce.catalog.api.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.util.UUID;
 
 public record CreateCategoryRequest(
     @NotBlank(message = "Category name must not be blank")
     @Size(max = 255, message = "Category name must not exceed 255 characters")
-    String categoryName) {
+    String categoryName,
+
+    UUID parentId
+) {
 }

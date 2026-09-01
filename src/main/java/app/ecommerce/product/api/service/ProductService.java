@@ -2,8 +2,8 @@ package app.ecommerce.product.api.service;
 
 import app.ecommerce.product.api.dto.request.CreateProductRequest;
 import app.ecommerce.product.api.dto.request.UpdateProductRequest;
-import app.ecommerce.shared.api.dto.response.PageResponse;
 import app.ecommerce.product.api.dto.response.ProductResponse;
+import app.ecommerce.shared.api.dto.response.PageResponse;
 import java.util.UUID;
 
 public interface ProductService {

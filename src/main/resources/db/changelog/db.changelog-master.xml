@@ -5,10 +5,19 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <include file="./changes/20260815.1200.init_catalog_tables.xml" relativeToChangelogFile="true" />
-    <include file="./changes/20260815.1230.init_constraints_catalog.xml" relativeToChangelogFile="true" />
-    <include file="./changes/20260815.1250.add_catalog_index.xml" relativeToChangelogFile="true" />
-    <include file="./changes/20260817.1200.add_category_name_constraints.xml" relativeToChangelogFile="true" />
-    <include file="./changes/20260830.1200.add_product_name_constraints.xml" relativeToChangelogFile="true" />
-    <include file="./changes/20260831.1200.add_sku_code_constraints.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.0015.init_category_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1010.init_brand_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1020.init_product_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1525.init_product_option_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1530.init_product_option_value.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1533.init_product_image_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1535.init_sku_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1540.init_sku_option_value_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1545.init_location_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1550.init_stock_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1555.init_account_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1600.init_role_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1605.init_password_credential_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1606.init_social_identity_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260901.1610.init_account_role_table.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
