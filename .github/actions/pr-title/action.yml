@@ -1,0 +1,18 @@
+name: PR title check
+description: Fail unless the pull request title starts with a ticket number, e.g. "#1".
+
+runs:
+  using: composite
+  steps:
+    - name: Validate PR title starts with a ticket number
+      shell: bash
+      env:
+        PR_TITLE: ${{ github.event.pull_request.title }}
+      run: |
+        echo "PR title: $PR_TITLE"
+        if [[ "$PR_TITLE" =~ ^#[0-9]+([[:space:]]|$) ]]; then
+          echo "OK — title starts with a ticket number."
+        else
+          echo "::error::PR title must start with a ticket number, e.g. '#1 Short description'. Got: '$PR_TITLE'"
+          exit 1
+        fi
