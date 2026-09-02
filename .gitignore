@@ -10,6 +10,8 @@ docker/*.env.local
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+# Composite action dir clashes with Gradle's build/ ignore above
+!.github/actions/build/
 
 ### STS ###
 .apt_generated
