@@ -25,22 +25,20 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="20260109.0020.add_pk" author="stran">
+
+    <changeSet id="20260901.0020.category_add_pk" author="stran">
         <addPrimaryKey tableName="t_category" columnNames="category_id" constraintName="pk_category" />
     </changeSet>
-    <changeSet id="20260901.0025.add_fk" author="stran">
+
+    <changeSet id="20260901.0025.category_add_fk" author="stran">
         <addForeignKeyConstraint baseTableName="t_category" baseColumnNames="parent_id"
                                  constraintName="fk_category_parent"
                                  referencedTableName="t_category"
                                  referencedColumnNames="category_id"
                                  onDelete="RESTRICT" onUpdate="RESTRICT" />
     </changeSet>
-    <changeSet id="20260901.0030.add_constraints" author="stran">
-        <sql>
-            ALTER TABLE t_category
-            ADD CONSTRAINT ck_category_name_normalized
-            CHECK (category_name = BTRIM(category_name) AND category_name &lt;&gt; '')
-        </sql>
+
+    <changeSet id="20260901.0030.category_add_uq_index" author="stran">
         <sql>
             CREATE UNIQUE INDEX uq_category_root_name
             ON t_category (LOWER(category_name))
@@ -50,6 +48,14 @@
             CREATE UNIQUE INDEX uq_category_child_name
             ON t_category (parent_id, LOWER(category_name))
             WHERE parent_id IS NOT NULL
+        </sql>
+    </changeSet>
+
+    <changeSet id="20260901.0035.category_add_constraints" author="stran">
+        <sql>
+            ALTER TABLE t_category
+            ADD CONSTRAINT ck_category_name_normalized
+            CHECK (category_name = BTRIM(category_name) AND category_name &lt;&gt; '')
         </sql>
     </changeSet>
 </databaseChangeLog>

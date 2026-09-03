@@ -10,6 +10,9 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
 
+# app.security.jwt (secret + issuer + ttl) is declared entirely in
+# environment/application.yaml (git-ignored) — see environment/application.example.yaml.
+
 logging:
   level:
     root: INFO

@@ -16,11 +16,11 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="20260901.1600.add_pk" author="stran">
+    <changeSet id="20260901.1600.role_add_pk" author="stran">
         <addPrimaryKey tableName="t_role" columnNames="role_id" constraintName="pk_role" />
     </changeSet>
 
-    <changeSet id="20260901.1600.add_uq_index" author="stran">
+    <changeSet id="20260901.1600.role_add_uq_index" author="stran">
         <addUniqueConstraint tableName="t_role" columnNames="role_code" constraintName="uq_role_code" />
     </changeSet>
 </databaseChangeLog>

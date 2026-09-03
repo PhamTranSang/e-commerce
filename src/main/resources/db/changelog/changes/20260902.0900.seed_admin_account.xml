@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20260902.0900.seed_roles" author="stran">
+        <insert tableName="t_role">
+            <column name="role_id" value="0af4b5e0-863a-491b-9408-07d3daf4d634" />
+            <column name="role_code" value="ADMIN" />
+        </insert>
+        <insert tableName="t_role">
+            <column name="role_id" value="715a741e-e636-4216-88fa-b649e3211bd9" />
+            <column name="role_code" value="STAFF" />
+        </insert>
+    </changeSet>
+
+    <changeSet id="20260902.0900.seed_admin_account" author="stran">
+        <insert tableName="t_account">
+            <column name="account_id" value="93bf7a0b-5658-42ab-9a23-fc0cb87a6089" />
+            <column name="email" value="admin@ecommerce.local" />
+            <column name="full_name" value="Admin User" />
+            <column name="is_active" valueBoolean="true" />
+            <column name="created_at" valueDate="2026-09-02T00:00:00" />
+            <column name="updated_at" valueDate="2026-09-02T00:00:00" />
+        </insert>
+        <insert tableName="t_password_credential">
+            <column name="credential_id" value="c37767ae-436e-44e1-8673-12f0df2c3c4c" />
+            <column name="account_id" value="93bf7a0b-5658-42ab-9a23-fc0cb87a6089" />
+            <column name="login" value="admin@ecommerce.local" />
+            <column name="password_hash" value="{bcrypt}$2a$10$Qt2WhaB/EA/mwPw6VmV7N.Fv9t5OWrcEQq4Inb.rBVfy.010N4ujq" />
+            <column name="created_at" valueDate="2026-09-02T00:00:00" />
+            <column name="updated_at" valueDate="2026-09-02T00:00:00" />
+        </insert>
+        <insert tableName="t_account_role">
+            <column name="account_id" value="93bf7a0b-5658-42ab-9a23-fc0cb87a6089" />
+            <column name="role_id" value="0af4b5e0-863a-491b-9408-07d3daf4d634" />
+        </insert>
+    </changeSet>
+</databaseChangeLog>

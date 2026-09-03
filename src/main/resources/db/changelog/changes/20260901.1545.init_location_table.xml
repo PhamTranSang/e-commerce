@@ -38,11 +38,11 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="20260901.1545.add_pk" author="stran">
+    <changeSet id="20260901.1545.location_add_pk" author="stran">
         <addPrimaryKey tableName="t_location" columnNames="location_id" constraintName="pk_location" />
     </changeSet>
 
-    <changeSet id="20260901.1545.add_uq_index" author="stran">
+    <changeSet id="20260901.1545.location_add_uq_index" author="stran">
         <addUniqueConstraint tableName="t_location" columnNames="location_code"
                              constraintName="uq_location_code" />
     </changeSet>

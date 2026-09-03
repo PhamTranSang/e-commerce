@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="20260901.1530.init_product_option_value" author="stran">
+    <changeSet id="20260901.1530.init_product_option_value_table" author="stran">
         <createTable tableName="t_product_option_value">
             <column name="option_value_id" type="UUID">
                 <constraints nullable="false" />
@@ -28,12 +28,12 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="20260901.1530.add_pk" author="stran">
+    <changeSet id="20260901.1530.product_option_value_add_pk" author="stran">
         <addPrimaryKey tableName="t_product_option_value" columnNames="option_value_id"
                        constraintName="pk_product_option_value" />
     </changeSet>
 
-    <changeSet id="20260901.1530.add_fk" author="stran">
+    <changeSet id="20260901.1530.product_option_value_add_fk" author="stran">
         <addForeignKeyConstraint baseTableName="t_product_option_value" baseColumnNames="option_id"
                                  constraintName="fk_value_option"
                                  referencedTableName="t_product_option"
@@ -41,7 +41,7 @@
                                  onDelete="RESTRICT" />
     </changeSet>
 
-    <changeSet id="20260901.1530.add_uq_index" author="stran">
+    <changeSet id="20260901.1530.product_option_value_add_uq_index" author="stran">
         <addUniqueConstraint tableName="t_product_option_value" columnNames="option_id, value"
                              constraintName="uq_value_per_option" />
     </changeSet>

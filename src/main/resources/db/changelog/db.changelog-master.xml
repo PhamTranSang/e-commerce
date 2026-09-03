@@ -20,4 +20,5 @@
     <include file="./changes/20260901.1605.init_password_credential_table.xml" relativeToChangelogFile="true" />
     <include file="./changes/20260901.1606.init_social_identity_table.xml" relativeToChangelogFile="true" />
     <include file="./changes/20260901.1610.init_account_role_table.xml" relativeToChangelogFile="true" />
+    <include file="./changes/20260902.0900.seed_admin_account.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

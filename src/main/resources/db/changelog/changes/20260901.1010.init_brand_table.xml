@@ -25,17 +25,17 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="20260901.1015.add_pk" author="stran">
+    <changeSet id="20260901.1015.brand_add_pk" author="stran">
         <addPrimaryKey tableName="t_brand" columnNames="brand_id" constraintName="pk_brand" />
     </changeSet>
 
-    <changeSet id="20260901.1015.add_uq_index" author="stran">
+    <changeSet id="20260901.1015.brand_add_uq_index" author="stran">
         <sql>
             CREATE UNIQUE INDEX uq_brand_name ON t_brand (LOWER(brand_name))
         </sql>
     </changeSet>
 
-    <changeSet id="20260901.1015.add_constraint" author="stran">
+    <changeSet id="20260901.1015.brand_add_constraints" author="stran">
         <sql>
             ALTER TABLE t_brand
             ADD CONSTRAINT ck_brand_name_normalized

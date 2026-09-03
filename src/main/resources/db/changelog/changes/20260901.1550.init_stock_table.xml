@@ -31,11 +31,11 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="20260901.1550.add_pk" author="stran">
+    <changeSet id="20260901.1550.stock_add_pk" author="stran">
         <addPrimaryKey tableName="t_stock" columnNames="stock_id" constraintName="pk_stock" />
     </changeSet>
 
-    <changeSet id="20260901.1550.add_fk" author="stran">
+    <changeSet id="20260901.1550.stock_add_fk" author="stran">
         <addForeignKeyConstraint baseTableName="t_stock" baseColumnNames="sku_id"
                                  constraintName="fk_stock_sku"
                                  referencedTableName="t_sku"
@@ -46,12 +46,12 @@
                                  referencedColumnNames="location_id" onDelete="RESTRICT" />
     </changeSet>
 
-    <changeSet id="20260901.1550.add_uq_index" author="stran">
+    <changeSet id="20260901.1550.stock_add_uq_index" author="stran">
         <addUniqueConstraint tableName="t_stock" columnNames="sku_id, location_id"
                              constraintName="uq_stock_sku_location" />
     </changeSet>
 
-    <changeSet id="20260901.1550.add_constraint" author="stran">
+    <changeSet id="20260901.1550.stock_add_constraints" author="stran">
         <sql>ALTER TABLE t_stock ADD CONSTRAINT ck_stock_on_hand_non_negative CHECK (quantity_on_hand &gt;= 0)</sql>
         <sql>ALTER TABLE t_stock ADD CONSTRAINT ck_stock_reserved_non_negative CHECK (quantity_reserved &gt;= 0)</sql>
     </changeSet>

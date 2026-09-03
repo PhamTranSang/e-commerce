@@ -28,11 +28,11 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="20260901.1555.add_pk" author="stran">
+    <changeSet id="20260901.1555.account_add_pk" author="stran">
         <addPrimaryKey tableName="t_account" columnNames="account_id" constraintName="pk_account" />
     </changeSet>
 
-    <changeSet id="20260901.1555.add_uq_index" author="stran">
+    <changeSet id="20260901.1555.account_add_uq_index" author="stran">
         <addUniqueConstraint tableName="t_account" columnNames="email" constraintName="uq_account_email" />
     </changeSet>
 </databaseChangeLog>

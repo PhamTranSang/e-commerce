@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="20260901.1525.init_product_option" author="stran">
+    <changeSet id="20260901.1525.init_product_option_table" author="stran">
         <createTable tableName="t_product_option">
             <column name="option_id" type="UUID">
                 <constraints nullable="false" />
@@ -28,18 +28,18 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="20260901.1525.add_pk" author="stran">
+    <changeSet id="20260901.1525.product_option_add_pk" author="stran">
         <addPrimaryKey tableName="t_product_option" columnNames="option_id" constraintName="pk_product_option" />
     </changeSet>
 
-    <changeSet id="20260901.1525.add_fk" author="stran">
+    <changeSet id="20260901.1525.product_option_add_fk" author="stran">
         <addForeignKeyConstraint baseTableName="t_product_option" baseColumnNames="product_id"
                                  constraintName="fk_option_product"
                                  referencedTableName="t_product"
                                  referencedColumnNames="product_id" />
     </changeSet>
 
-    <changeSet id="20260901.1525.add_uq_index" author="stran">
+    <changeSet id="20260901.1525.product_option_add_uq_index" author="stran">
         <addUniqueConstraint tableName="t_product_option" columnNames="product_id, option_name"
                              constraintName="uq_option_name_per_product" />
     </changeSet>

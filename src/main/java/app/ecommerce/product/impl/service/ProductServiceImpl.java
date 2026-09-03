@@ -104,7 +104,7 @@ public class ProductServiceImpl implements ProductService {
         log.debug("Getting active products: categoryId={}, page={}, size={}", categoryId, page, size);
 
         final var entityPage = repository
-            .findAll(ProductSpecifications.activeInCategory(categoryId), pageable)
+            .findAll(ProductSpecifications.active(categoryId), pageable)
             .map(mapper::toResponse);
         return PageResponse.from(entityPage);
     }
