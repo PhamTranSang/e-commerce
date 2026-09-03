@@ -34,11 +34,11 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="20260901.1533.add_pk" author="stran">
+    <changeSet id="20260901.1533.product_image_add_pk" author="stran">
         <addPrimaryKey tableName="t_product_image" columnNames="image_id" constraintName="pk_product_image" />
     </changeSet>
 
-    <changeSet id="20260901.1533.add_fk" author="stran">
+    <changeSet id="20260901.1533.product_image_add_fk" author="stran">
         <addForeignKeyConstraint baseTableName="t_product_image" baseColumnNames="product_id"
                                  constraintName="fk_product_image_product"
                                  referencedTableName="t_product"
@@ -49,7 +49,7 @@
                                  referencedColumnNames="option_value_id" onDelete="RESTRICT" />
     </changeSet>
 
-    <changeSet id="20260901.1533.add_constraint" author="stran">
+    <changeSet id="20260901.1533.product_image_add_uq_index" author="stran">
         <!-- Mỗi product tối đa một ảnh chính -->
         <sql>
             CREATE UNIQUE INDEX uq_product_image_primary

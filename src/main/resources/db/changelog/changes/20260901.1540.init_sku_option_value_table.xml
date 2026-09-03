@@ -16,12 +16,12 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="20260901.1540.add_pk" author="stran">
+    <changeSet id="20260901.1540.sku_option_value_add_pk" author="stran">
         <addPrimaryKey tableName="t_sku_option_value" columnNames="sku_id, option_value_id"
                        constraintName="pk_sku_option_value" />
     </changeSet>
 
-    <changeSet id="20260901.1540.add_fk" author="stran">
+    <changeSet id="20260901.1540.sku_option_value_add_fk" author="stran">
         <addForeignKeyConstraint baseTableName="t_sku_option_value" baseColumnNames="sku_id"
                                  constraintName="fk_sov_sku"
                                  referencedTableName="t_sku"

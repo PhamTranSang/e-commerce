@@ -1,3 +1,10 @@
+app:
+  security:
+    jwt:
+      secret: 'kBpX+HSQZixfyda+NzLgDKSKFHDlqF7jCBB/HuHW1FaMFI+DBL7LUwQLQVHGWciI'
+      issuer: e-commerce
+      ttl: PT12H
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=ecommerce

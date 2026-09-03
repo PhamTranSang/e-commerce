@@ -1,0 +1,6 @@
+app:
+  security:
+    jwt:
+      secret: '0123456789012345678901234567890123'
+      issuer: 'e-commerce-test'
+      ttl: PT12H

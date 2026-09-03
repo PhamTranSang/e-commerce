@@ -32,11 +32,11 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="20260901.1025.add_pk" author="stran">
+    <changeSet id="20260901.1025.product_add_pk" author="stran">
         <addPrimaryKey tableName="t_product" columnNames="product_id" constraintName="pk_product" />
     </changeSet>
 
-    <changeSet id="20260901.1025.add_fk" author="stran">
+    <changeSet id="20260901.1025.product_add_fk" author="stran">
         <addForeignKeyConstraint baseTableName="t_product" baseColumnNames="category_id"
                                  constraintName="fk_product_category"
                                  referencedTableName="t_category"
@@ -47,13 +47,13 @@
                                  referencedColumnNames="brand_id" onDelete="RESTRICT" />
     </changeSet>
 
-    <changeSet id="20260901.1025.add_uq_index" author="stran">
+    <changeSet id="20260901.1025.product_add_uq_index" author="stran">
         <sql>
             CREATE UNIQUE INDEX uq_product_name ON t_product (category_id, LOWER(product_name))
         </sql>
     </changeSet>
 
-    <changeSet id="20260901.1025.add_constraint" author="stran">
+    <changeSet id="20260901.1025.product_add_constraints" author="stran">
         <sql>
             ALTER TABLE t_product
             ADD CONSTRAINT ck_product_name_normalized
