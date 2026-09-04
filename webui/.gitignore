@@ -1,0 +1,7 @@
+node_modules
+dist
+.nx
+coverage
+
+# TypeScript incremental build cache
+*.tsbuildinfo

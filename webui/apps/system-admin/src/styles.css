@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@import "../../../packages/ui/src/theme.css";
+
+/* Tailwind must scan every workspace package this app renders, not just its own src. */
+@source "../../../packages/ui/src";
+@source "../../../packages/shell/src";

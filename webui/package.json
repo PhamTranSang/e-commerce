@@ -1,0 +1,37 @@
+{
+  "name": "webui",
+  "private": true,
+  "packageManager": "pnpm@9.12.3",
+  "scripts": {
+    "dev": "nx serve commerce-admin",
+    "dev:commerce-admin": "nx serve commerce-admin",
+    "dev:system-admin": "nx serve system-admin",
+    "build": "nx run-many -t build",
+    "lint": "nx run-many -t lint",
+    "typecheck": "nx run-many -t typecheck"
+  },
+  "devDependencies": {
+    "@nx/vite": "^20.5.0",
+    "@nx/react": "^20.5.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "nx": "^20.5.0",
+    "typescript": "^5.6.3",
+    "vite": "8.0.16"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "@tanstack/react-query": "^5.59.20",
+    "@radix-ui/react-slot": "^1.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.27.0",
+    "tailwind-merge": "^2.5.4",
+    "zod": "^3.23.8"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "commerce-admin",
+  "projectType": "application",
+  "sourceRoot": "apps/commerce-admin/src",
+  "targets": {
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "options": {
+        "buildTarget": "commerce-admin:build"
+      }
+    },
+    "build": {
+      "executor": "@nx/vite:build",
+      "options": {
+        "outputPath": "dist/apps/commerce-admin"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p apps/commerce-admin/tsconfig.app.json --noEmit"
+      }
+    }
+  }
+}
