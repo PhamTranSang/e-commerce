@@ -43,8 +43,8 @@ class AuthServiceTest {
     @Test
     void logsInAndReturnsTokenPayload() {
         final var principal = new AccountPrincipal(
-            ACCOUNT_ID, "admin@ecommerce.local", "Admin User", "admin@ecommerce.local",
-            "{bcrypt}hash", List.of("ADMIN"), true,
+            ACCOUNT_ID, "admin@ecommerce.local", "admin@ecommerce.local", "Admin User",
+                "{bcrypt}hash", List.of("ADMIN"), true,
             List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
         final var authentication = new UsernamePasswordAuthenticationToken(
             principal, null, principal.getAuthorities());

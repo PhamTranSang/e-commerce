@@ -13,7 +13,6 @@
             <column name="product_id" type="UUID">
                 <constraints nullable="false" />
             </column>
-            <!-- NULL = ảnh chung của product; có giá trị = ảnh gắn với một option value (vd màu Blue) -->
             <column name="option_value_id" type="UUID" />
             <column name="url" type="VARCHAR(1024)">
                 <constraints nullable="false" />
@@ -50,7 +49,6 @@
     </changeSet>
 
     <changeSet id="20260901.1533.product_image_add_uq_index" author="stran">
-        <!-- Mỗi product tối đa một ảnh chính -->
         <sql>
             CREATE UNIQUE INDEX uq_product_image_primary
             ON t_product_image (product_id)

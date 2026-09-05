@@ -22,7 +22,7 @@ public class AccountUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(final String login) {
-        final var credential = credentialRepository.findByLoginIgnoreCase(login)
+        final var credential = credentialRepository.findByUsernameIgnoreCase(login)
             .orElseThrow(() -> new UsernameNotFoundException("Account not found"));
         final var account = credential.getAccount();
 
@@ -35,9 +35,9 @@ public class AccountUserDetailsService implements UserDetailsService {
 
         return new AccountPrincipal(
             account.getAccountId(),
+            login,
             account.getEmail(),
             account.getFullName(),
-            login,
             credential.getPasswordHash(),
             roles,
             Boolean.TRUE.equals(account.getIsActive()),

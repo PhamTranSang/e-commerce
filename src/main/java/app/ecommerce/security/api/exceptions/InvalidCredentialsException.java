@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 /**
  * Login failed. The message is deliberately generic so it does not reveal whether the
- * login exists or the password was wrong.
+ * username exists or the password was wrong.
  */
 public final class InvalidCredentialsException extends BusinessException {
 
