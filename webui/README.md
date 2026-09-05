@@ -1,74 +1,74 @@
 # WebUI Workspace
 
-Nx + pnpm monorepo for the e-commerce admin frontends.
+Monorepo Nx + pnpm cho các frontend admin của hệ thống e-commerce.
 
-Apps:
+Ứng dụng:
 
-- **commerce-admin** — catalog console (categories, brands, products, SKUs).
-- **system-admin** — platform console (users, roles); role-gated login.
+- **commerce-admin** — console quản lý catalog (categories, brands, products, SKUs).
+- **system-admin** — console quản lý nền tảng (users, roles); đăng nhập có kiểm tra role.
 
-Both are React 18 + Vite + Tailwind v4, and talk to the Spring backend at
-`http://localhost:8080` through the Vite dev proxy (so no CORS setup is needed).
+Cả hai đều dùng React 18 + Vite + Tailwind v4, và gọi tới backend Spring ở
+`http://localhost:8080` thông qua dev proxy của Vite (nên không cần cấu hình CORS).
 
-## Prerequisites
+## Yêu cầu
 
-- **Node 20+** (developed on Node 22 / 24).
-- **pnpm 9** — the repo pins `pnpm@9.12.3`. The easiest way is Corepack (ships with Node):
+- **Node 20+** (phát triển trên Node 22 / 24).
+- **pnpm 9** — repo ghim `pnpm@9.12.3`. Cách đơn giản nhất là dùng Corepack (đi kèm Node):
 
   ```bash
-  corepack enable        # once per machine
+  corepack enable        # chạy một lần cho mỗi máy
   ```
 
-  If `pnpm` isn't on your PATH, prefix the commands below with `corepack ` (e.g. `corepack pnpm install`).
+  Nếu `pnpm` không có trong PATH, thêm tiền tố `corepack ` vào các lệnh bên dưới (ví dụ `corepack pnpm install`).
 
-## Install
+## Cài đặt
 
-From this `webui/` directory:
+Từ thư mục `webui/` này:
 
 ```bash
 pnpm install
 ```
 
-## Run a dev server
+## Chạy development
 
-Each app runs on its own port with hot-reload:
+Mỗi app chạy trên một cổng riêng, có hot-reload:
 
-| App            | Command                     | URL                     |
+| App            | Lệnh                        | URL                     |
 | -------------- | --------------------------- | ----------------------- |
 | commerce-admin | `pnpm dev`                  | http://localhost:4200   |
 | commerce-admin | `pnpm dev:commerce-admin`   | http://localhost:4200   |
 | system-admin   | `pnpm dev:system-admin`     | http://localhost:4201   |
 
-`pnpm dev` is a shortcut for `dev:commerce-admin`. Run the two commands in
-separate terminals to work on both apps at once.
+`pnpm dev` là lối tắt của `dev:commerce-admin`. Chạy hai lệnh ở hai terminal
+riêng nếu muốn làm việc trên cả hai app cùng lúc.
 
-Open the app and you land on `/login`. Sign in with a backend account (the seeded
-admin is `admin@ecommerce.local`). system-admin additionally requires an admin role.
+Mở app lên sẽ vào thẳng `/login`. Đăng nhập bằng một tài khoản backend (tài khoản
+admin được seed sẵn là `admin@ecommerce.local`). Riêng system-admin còn yêu cầu tài khoản có role admin.
 
 ### Backend & API proxy
 
-The dev server proxies every `/api/*` request to the backend, keeping calls same-origin:
+Dev server proxy mọi request `/api/*` sang backend, giữ cho các lời gọi cùng origin:
 
-- Default target: `http://localhost:8080` — start the Spring app first.
-- Point at a different backend without editing files:
+- Target mặc định: `http://localhost:8080` — hãy khởi động app Spring trước.
+- Trỏ sang backend khác mà không cần sửa file:
 
   ```bash
   VITE_API_PROXY_TARGET=http://localhost:9090 pnpm dev
   ```
 
-- To bypass the proxy and call a backend directly (that backend must then enable CORS),
-  set `VITE_API_BASE_URL` instead.
+- Muốn bỏ qua proxy để gọi thẳng backend (khi đó backend phải bật CORS),
+  đặt biến `VITE_API_BASE_URL` thay thế.
 
-> The proxy only exists in dev/preview. For production, serve the built files behind a
-> reverse proxy or enable CORS on the backend.
+> Proxy chỉ tồn tại ở dev/preview. Với production, hãy phục vụ file đã build phía sau
+> một reverse proxy hoặc bật CORS trên backend.
 
 ## Build
 
 ```bash
-pnpm build            # build every app → dist/apps/<app>
+pnpm build            # build mọi app → dist/apps/<app>
 ```
 
-Preview a production build locally (serves `dist/` on the dev ports):
+Xem thử bản production tại máy (phục vụ `dist/` trên các cổng dev):
 
 ```bash
 pnpm build
@@ -76,39 +76,39 @@ pnpm exec vite preview --config apps/commerce-admin/vite.config.ts   # http://lo
 pnpm exec vite preview --config apps/system-admin/vite.config.ts     # http://localhost:4201
 ```
 
-## Checks
+## Kiểm tra
 
 ```bash
-pnpm typecheck        # tsc --noEmit across all projects
-pnpm lint             # eslint across all projects
+pnpm typecheck        # chạy tsc --noEmit cho toàn bộ project
+pnpm lint             # chạy eslint cho toàn bộ project
 ```
 
-Per-project (faster while iterating):
+Chạy riêng từng project (nhanh hơn khi đang code):
 
 ```bash
 pnpm exec nx typecheck commerce-admin
 pnpm exec nx build system-admin
 ```
 
-## Layout
+## Cấu trúc thư mục
 
 ```
 apps/
-  commerce-admin/     # catalog console
-  system-admin/       # platform console
+  commerce-admin/     # console quản lý catalog
+  system-admin/       # console quản lý nền tảng
 packages/
   ui/                 # design system: primitives (components/ui) + patterns (components/patterns) + theme.css
-  shell/              # app shell shared by both apps: createAuth, Sidebar, Topbar, AppLayout, route config
-  api/                # axios client + typed endpoint calls (auth, catalog, admin)
-  types/              # shared response/request types (the API contract)
-  config/             # shared constants
+  shell/              # app shell dùng chung cho cả hai app: createAuth, Sidebar, Topbar, AppLayout, route config
+  api/                # axios client + các lời gọi endpoint có kiểu (auth, catalog, admin)
+  types/              # type request/response dùng chung (chính là API contract)
+  config/             # hằng số dùng chung
 ```
 
-Import aliases (see `tsconfig.base.json`): `@ui`, `@shell`, `@api`, `@domain` (→ `packages/types`), `@config`.
+Alias import (xem `tsconfig.base.json`): `@ui`, `@shell`, `@api`, `@domain` (→ `packages/types`), `@config`.
 
-## Notes
+## Ghi chú
 
-- Each app owns its routes in `src/routes.tsx` — a single source that drives both
-  the router and the sidebar. Add a page there and it shows up in both.
-- The system-admin User/Role endpoints are not implemented on the backend yet; the FE
-  is written against the contract in `docs/system-admin-api-contract.md`.
+- Mỗi app tự quản routes của mình trong `src/routes.tsx` — một nguồn duy nhất chi phối
+  cả router lẫn sidebar. Thêm một trang vào đó là nó tự xuất hiện ở cả hai chỗ.
+- Các endpoint User/Role của system-admin chưa được implement ở backend; phần FE được
+  viết theo contract trong `../.claude/plan/docs/system-admin-api-contract.md`.
