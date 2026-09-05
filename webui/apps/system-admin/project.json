@@ -1,0 +1,28 @@
+{
+  "name": "system-admin",
+  "projectType": "application",
+  "sourceRoot": "apps/system-admin/src",
+  "targets": {
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "options": {
+        "buildTarget": "system-admin:build"
+      }
+    },
+    "build": {
+      "executor": "@nx/vite:build",
+      "options": {
+        "outputPath": "dist/apps/system-admin"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p apps/system-admin/tsconfig.app.json --noEmit"
+      }
+    }
+  }
+}
