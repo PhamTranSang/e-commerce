@@ -41,10 +41,8 @@
     </changeSet>
 
     <changeSet id="20260901.1606.social_identity_add_uq_index" author="stran">
-        <!-- một tài khoản bên provider (vd 1 Google account) chỉ map tới 1 account trong hệ -->
         <addUniqueConstraint tableName="t_social_identity" columnNames="provider, provider_user_id"
                              constraintName="uq_social_identity_provider_user" />
-        <!-- một account chỉ liên kết 1 lần cho mỗi provider -->
         <addUniqueConstraint tableName="t_social_identity" columnNames="account_id, provider"
                              constraintName="uq_social_identity_account_provider" />
     </changeSet>

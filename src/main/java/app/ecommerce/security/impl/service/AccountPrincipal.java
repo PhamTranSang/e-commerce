@@ -15,15 +15,15 @@ public class AccountPrincipal extends User {
 
     public AccountPrincipal(//
                             final UUID accountId, //
+                            final String username, //
                             final String email, //
                             final String fullName, //
-                            final String login, //
                             final String passwordHash, //
                             final List<String> roles, //
                             final boolean active, //
                             final Collection<? extends GrantedAuthority> authorities //
     ) {
-        super(login, passwordHash, active, true, true, true, authorities);
+        super(username, passwordHash, active, true, true, true, authorities);
         this.accountId = accountId;
         this.email = email;
         this.fullName = fullName;

@@ -30,8 +30,8 @@ public class PasswordCredentialEntity {
     @JoinColumn(name = "account_id", nullable = false)
     private AccountEntity account;
 
-    @Column(name = "login", nullable = false)
-    private String login;
+    @Column(name = "username", nullable = false)
+    private String username;
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
