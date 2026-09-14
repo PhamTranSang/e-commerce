@@ -1,0 +1,95 @@
+name: Verify webui
+description: Set up Node + pnpm, install the webui workspace, run lint/typecheck/build, publish a job summary.
+
+inputs:
+  node-version:
+    description: Node.js version to set up.
+    required: false
+    default: '22'
+  working-directory:
+    description: Root of the pnpm workspace.
+    required: false
+    default: 'webui'
+  report-name:
+    description: Suffix for the uploaded artifact (useful in a matrix).
+    required: false
+    default: 'default'
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Node ${{ inputs.node-version }}
+      uses: actions/setup-node@v7
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Set up pnpm (with store cache)
+      uses: pnpm/action-setup@v6
+      with:
+        package_json_file: ${{ inputs.working-directory }}/package.json
+        cache: true
+        cache_dependency_path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm install --frozen-lockfile
+
+    - name: Lint
+      id: lint
+      continue-on-error: true
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm lint
+
+    - name: Typecheck
+      id: typecheck
+      continue-on-error: true
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm typecheck
+
+    - name: Build
+      id: build
+      continue-on-error: true
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm build
+
+    - name: Publish webui summary
+      if: always()
+      shell: bash
+      env:
+        LINT: ${{ steps.lint.outcome }}
+        TYPECHECK: ${{ steps.typecheck.outcome }}
+        BUILD: ${{ steps.build.outcome }}
+      run: |
+        icon() { [ "$1" = 'success' ] && echo ':white_check_mark:' || echo ':x:'; }
+
+        {
+          echo "### Frontend (${{ inputs.report-name }})"
+          echo ""
+          echo "| Check | Command | Result |"
+          echo "| --- | --- | --- |"
+          echo "| Lint | \`pnpm lint\` | $(icon "$LINT") $LINT |"
+          echo "| Typecheck | \`pnpm typecheck\` | $(icon "$TYPECHECK") $TYPECHECK |"
+          echo "| Build | \`pnpm build\` | $(icon "$BUILD") $BUILD |"
+        } >> "$GITHUB_STEP_SUMMARY"
+
+        failed=0
+        for step in LINT TYPECHECK BUILD; do
+          if [ "${!step}" != 'success' ]; then
+            echo "::error::$step failed — see the step log above."
+            failed=1
+          fi
+        done
+        exit "$failed"
+
+    - name: Upload build output
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: webui-dist-${{ inputs.report-name }}
+        path: ${{ inputs.working-directory }}/dist/
+        if-no-files-found: ignore
+        retention-days: 7
