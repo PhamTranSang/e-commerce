@@ -32,7 +32,7 @@ public class AuthService {
         final AccountPrincipal principal;
         try {
             final var authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.login(), request.password()));
+                new UsernamePasswordAuthenticationToken(request.username(), request.password()));
             principal = (AccountPrincipal) authentication.getPrincipal();
             final var accountResponse = new AuthenticatedAccountResponse(
                     principal.accountId(), principal.email(), principal.fullName(), principal.roles());

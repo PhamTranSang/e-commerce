@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PasswordCredentialRepository extends JpaRepository<PasswordCredentialEntity, UUID> {
 
-    Optional<PasswordCredentialEntity> findByLoginIgnoreCase(String login);
+    Optional<PasswordCredentialEntity> findByUsernameIgnoreCase(String login);
 }
