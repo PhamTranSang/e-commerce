@@ -12,11 +12,11 @@ runs:
         echo "PR title: $PR_TITLE"
         if [[ "$PR_TITLE" =~ ^#[0-9]+([[:space:]]|$) ]]; then
           echo "OK — title starts with a ticket number."
-          echo "###PR title OK" >> "$GITHUB_STEP_SUMMARY"
+          echo "PR title OK" >> "$GITHUB_STEP_SUMMARY"
         else
           echo "::error::PR title must start with a ticket number, e.g. '#1 Short description'. Got: '$PR_TITLE'"
           {
-            echo "###Invalid PR title"
+            echo "Invalid PR title"
             echo ""
             echo "Expected format: \`#<ticket> <short description>\`"
             echo ""
