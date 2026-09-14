@@ -4,26 +4,135 @@ on:
   push:
     branches: [main]
   pull_request:
-    types: [opened, edited, reopened, synchronize]
+    types: [opened, edited, reopened, synchronize, ready_for_review]
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  pr-title:
+    name: PR title
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft != true
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout (actions only)
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github
+          sparse-checkout-cone-mode: false
+
+      - uses: ./.github/actions/pr-title
+
+  changes:
+    name: Detect changes
+    needs: [pr-title]
+    if: |
+      always()
+      && github.event.pull_request.draft != true
+      && (needs.pr-title.result == 'success' || needs.pr-title.result == 'skipped')
+      && !(github.event_name == 'pull_request' && github.event.action == 'edited')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Filter changed paths
+        id: filter
+        uses: dorny/paths-filter@v4
+        with:
+          filters: |
+            backend:
+              - 'src/**'
+              - 'build.gradle.kts'
+              - 'settings.gradle.kts'
+              - 'gradle/**'
+              - 'gradlew'
+              - 'gradlew.bat'
+              - 'Dockerfile'
+              - 'docker/**'
+              - 'environment/**'
+              - 'scripts/**'
+              - '.github/workflows/ci.yml'
+              - '.github/actions/test/**'
+            frontend:
+              - 'webui/**'
+              - '.github/workflows/ci.yml'
+              - '.github/actions/webui/**'
+
+  backend:
+    name: Backend
+    needs: [changes]
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - uses: ./.github/actions/test
+
+  frontend:
+    name: Frontend
+    needs: [changes]
+    if: needs.changes.outputs.frontend == 'true'
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - name: Check PR title
-        if: github.event_name == 'pull_request'
-        uses: ./.github/actions/pr-title
+      - uses: ./.github/actions/webui
 
-      - name: Build & test
-        uses: ./.github/actions/build
+  verify:
+    name: Verify
+    needs: [pr-title, changes, backend, frontend]
+    if: |
+      always()
+      && github.event.pull_request.draft != true
+      && !(github.event_name == 'pull_request' && github.event.action == 'edited')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check upstream job results
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Upstream results: $RESULTS"
+          {
+            echo "| Job | Result |"
+            echo "| --- | --- |"
+            echo "| PR title | ${{ needs.pr-title.result }} |"
+            echo "| Detect changes | ${{ needs.changes.result }} |"
+            echo "| Backend | ${{ needs.backend.result }} |"
+            echo "| Frontend | ${{ needs.frontend.result }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          failed=0
+          for result in $RESULTS; do
+            case "$result" in
+              success | skipped) ;;
+              *) failed=1 ;;
+            esac
+          done
+
+          if [ "$failed" -ne 0 ]; then
+            echo "::error::At least one upstream job did not succeed."
+            exit 1
+          fi
+          echo "All upstream jobs succeeded or were skipped."

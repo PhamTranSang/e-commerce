@@ -1,0 +1,56 @@
+name: Verify
+description: Set up JDK + Gradle, run the check task, publish reports and a job summary.
+
+inputs:
+  java-version:
+    description: JDK version to set up.
+    required: false
+    default: '25'
+  gradle-args:
+    description: Gradle task and args, e.g. 'check' or ':core:test'.
+    required: false
+    default: 'check'
+  report-name:
+    description: Suffix for the uploaded artifact (useful in a matrix).
+    required: false
+    default: 'default'
+
+runs:
+  using: composite
+  steps:
+    - name: Set up JDK ${{ inputs.java-version }}
+      uses: actions/setup-java@v6
+      with:
+        distribution: temurin
+        java-version: ${{ inputs.java-version }}
+
+    - name: Validate Gradle wrapper
+      uses: gradle/actions/wrapper-validation@v5
+
+    - name: Set up Gradle (with cache)
+      uses: gradle/actions/setup-gradle@v5
+
+    - name: Run verification
+      shell: bash
+      run: ./gradlew ${{ inputs.gradle-args }} --continue
+
+    - name: Publish test summary
+      if: always()
+      uses: mikepenz/action-junit-report@v6
+      with:
+        report_paths: '**/build/test-results/test/TEST-*.xml'
+        check_name: "Tests (${{ inputs.report-name }})"
+        detailed_summary: true
+        include_passed: false
+        fail_on_failure: false
+
+    - name: Upload reports
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: reports-${{ inputs.report-name }}
+        path: |
+          **/build/reports/
+          **/build/test-results/
+        if-no-files-found: ignore
+        retention-days: 7
