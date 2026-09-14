@@ -4,26 +4,46 @@ on:
   push:
     branches: [main]
   pull_request:
-    types: [opened, edited, reopened, synchronize]
+    types: [opened, edited, reopened, synchronize, ready_for_review]
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  pr-title:
+    name: PR title
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft != true
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout (actions only)
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github
+          sparse-checkout-cone-mode: false
+
+      - uses: ./.github/actions/pr-title
+
+  verify:
+    name: Verify
+    needs: [pr-title]
+    if: |
+      always()
+      && github.event.pull_request.draft != true
+      && (needs.pr-title.result == 'success' || needs.pr-title.result == 'skipped')
+      && !(github.event_name == 'pull_request' && github.event.action == 'edited')
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - name: Check PR title
-        if: github.event_name == 'pull_request'
-        uses: ./.github/actions/pr-title
-
-      - name: Build & test
-        uses: ./.github/actions/build
+      - uses: ./.github/actions/test
