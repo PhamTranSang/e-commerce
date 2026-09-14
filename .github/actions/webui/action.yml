@@ -1,0 +1,47 @@
+name: Verify webui
+description: Set up Node + pnpm, install the webui workspace, then lint, typecheck and build it.
+
+inputs:
+  node-version:
+    description: Node.js version to set up.
+    required: false
+    default: '22'
+  working-directory:
+    description: Root of the pnpm workspace.
+    required: false
+    default: 'webui'
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Node ${{ inputs.node-version }}
+      uses: actions/setup-node@v7
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Set up pnpm (with store cache)
+      uses: pnpm/action-setup@v6
+      with:
+        package_json_file: ${{ inputs.working-directory }}/package.json
+        cache: true
+        cache_dependency_path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm install --frozen-lockfile
+
+    - name: Lint
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm lint
+
+    - name: Typecheck
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm typecheck
+
+    - name: Build
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm build
